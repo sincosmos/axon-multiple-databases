@@ -44,7 +44,7 @@ public class AxonEventStoreConfig {
     }
 
     @Primary
-    @Bean(name = "axonPlatformTransactionManager")
+    @Bean(name = "axonTransactionManager")
     public PlatformTransactionManager transactionManager(
             @Qualifier("axonEntityManagerFactory") EntityManagerFactory axonEntityManagerFactory) {
         return new JpaTransactionManager(axonEntityManagerFactory);

@@ -91,27 +91,5 @@
         </dependency>-->
     </dependencies>
 
-    <repositories>
-        <repository>
-            <id>weibo</id>
-            <name>nexus-weibo</name>
-            <url>http://nexus.biz.weibo.com/repository/maven-public/</url>
-            <releases>
-                <enabled>true</enabled>
-                <updatePolicy>interval:60</updatePolicy>
-                <checksumPolicy>warn</checksumPolicy>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-                <updatePolicy>always</updatePolicy>
-                <checksumPolicy>warn</checksumPolicy>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>aliyun</id>
-            <name>nexus-aliyun</name>
-            <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
-        </repository>
-    </repositories>
 
 </project>
