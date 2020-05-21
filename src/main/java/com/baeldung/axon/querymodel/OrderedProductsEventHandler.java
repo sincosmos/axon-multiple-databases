@@ -1,14 +1,14 @@
 package com.baeldung.axon.querymodel;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.baeldung.axon.coreapi.queries.FindOrderedProductByIdQuery;
+import com.baeldung.axon.repository.OrderMasterRepository;
+import com.baeldung.axon.repository.OrderSlaveRepository;
 import org.axonframework.config.ProcessingGroup;
 import org.axonframework.eventhandling.EventHandler;
 import org.axonframework.queryhandling.QueryHandler;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.baeldung.axon.coreapi.events.OrderConfirmedEvent;
@@ -18,40 +18,45 @@ import com.baeldung.axon.coreapi.queries.FindAllOrderedProductsQuery;
 import com.baeldung.axon.coreapi.queries.OrderedProduct;
 
 @Service
-@ProcessingGroup("ordered-products")
+//@ProcessingGroup("ordered-products")
 public class OrderedProductsEventHandler {
 
-    private final Map<String, OrderedProduct> orderedProducts = new HashMap<>();
+    @Autowired
+    private OrderMasterRepository orderMasterRepository;
+
+    @Autowired
+    private OrderSlaveRepository orderSlaveRepository;
 
     @EventHandler
     public void on(OrderPlacedEvent event) {
         String orderId = event.getOrderId();
-        orderedProducts.put(orderId, new OrderedProduct(orderId, event.getProduct()));
+        orderMasterRepository.save(new OrderedProduct(orderId, event.getProduct()));
     }
 
     @EventHandler
     public void on(OrderConfirmedEvent event) {
-        orderedProducts.computeIfPresent(event.getOrderId(), (orderId, orderedProduct) -> {
-            orderedProduct.setOrderConfirmed();
-            return orderedProduct;
+        orderMasterRepository.findById(event.getOrderId()).ifPresent(x-> {
+            x.setOrderConfirmed();
+            orderMasterRepository.save(x);
         });
+
     }
 
     @EventHandler
     public void on(OrderShippedEvent event) {
-        orderedProducts.computeIfPresent(event.getOrderId(), (orderId, orderedProduct) -> {
-            orderedProduct.setOrderShipped();
-            return orderedProduct;
+        orderMasterRepository.findById(event.getOrderId()).ifPresent(x-> {
+            x.setOrderShipped();
+            orderMasterRepository.save(x);
         });
     }
 
     @QueryHandler
     public List<OrderedProduct> handle(FindAllOrderedProductsQuery query) {
-        return new ArrayList<>(orderedProducts.values());
+        return orderMasterRepository.findAll();
     }
 
     @QueryHandler
     public OrderedProduct handle(FindOrderedProductByIdQuery query) {
-        return orderedProducts.get(query.getOrderId());
+        return orderMasterRepository.findById(query.getOrderId()).orElse(null);
     }
 }

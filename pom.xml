@@ -4,7 +4,9 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <groupId>com.baeldung.axon</groupId>
     <artifactId>axon</artifactId>
+    <version>1.0-SNAPSHOT</version>
     <name>axon</name>
     <description>Basic Axon Framework with Spring Boot configuration tutorial</description>
 
@@ -22,6 +24,14 @@
 
         <!-- axon -->
         <axon.version>4.3.2</axon.version>
+
+        <!--for plugin-->
+        <build.plugins.plugin.version>2.8.2</build.plugins.plugin.version>
+        <maven-compiler-plugin.version>3.6.1</maven-compiler-plugin.version>
+        <maven-source-plugin.version>3.0.1</maven-source-plugin.version>
+        <maven-shade-plugin.version>2.4.3</maven-shade-plugin.version>
+        <jacoco-maven-plugin.version>0.8.4</jacoco-maven-plugin.version>
+        <spring-boot-maven.version>2.1.7.RELEASE</spring-boot-maven.version>
     </properties>
 
     <dependencies>
@@ -84,6 +94,12 @@
             <artifactId>lombok</artifactId>
             <version>1.18.8</version>
         </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
         <!--<dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
@@ -91,5 +107,21 @@
         </dependency>-->
     </dependencies>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${spring-boot-maven.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

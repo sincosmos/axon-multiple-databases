@@ -1,6 +1,11 @@
 server:
   port: 10141
 
+logging:
+  level:
+    com.zaxxer.hikari.pool.*: debug
+    #org.springframework.web: debug
+
 spring:
   application:
     name: Order Management Service
@@ -8,29 +13,32 @@ spring:
     banner-mode: "off"
   datasource:
     hikari:
+      dataSourceProperties:
+        fastConnectionFailoverEnabled: true
+      leak-detection-threshold: 5000
       axon-master:
-        jdbcUrl: jdbc:mysql://127.0.0.1:3306/axon_event_store?zeroDateTimeBehavior=convertToNull
+        jdbcUrl: jdbc:mysql://127.0.0.1:3306/order_axon_event_store?zeroDateTimeBehavior=convertToNull
         username: root
         password: 1234qwer
         driverClassName: com.mysql.cj.jdbc.Driver
         connectionTestQuery: SELECT 1
-        connectionTimeout: 30000
+        connectionTimeout: 10000
+        maximumPoolSize: 15
+      projection-master:
+        jdbcUrl: jdbc:mysql://127.0.0.1:3306/order_master?zeroDateTimeBehavior=convertToNull
+        username: root
+        password: 1234qwer
+        driverClassName: com.mysql.cj.jdbc.Driver
+        connectionTestQuery: SELECT 1
+        connectionTimeout: 10000
         maximumPoolSize: 10
-      projection-write:
-        jdbcUrl: jdbc:mysql://127.0.0.1:3306/order_write?zeroDateTimeBehavior=convertToNull
+      projection-slave:
+        jdbcUrl: jdbc:mysql://127.0.0.1:3306/order_slave?zeroDateTimeBehavior=convertToNull
         username: root
         password: 1234qwer
         driverClassName: com.mysql.cj.jdbc.Driver
         connectionTestQuery: SELECT 1
-        connectionTimeout: 30000
-        maximumPoolSize: 10
-      projection-read:
-        jdbcUrl: jdbc:mysql://127.0.0.1:3306/order_read?zeroDateTimeBehavior=convertToNull
-        username: root
-        password: 1234qwer
-        driverClassName: com.mysql.cj.jdbc.Driver
-        connectionTestQuery: SELECT 1
-        connectionTimeout: 30000
+        connectionTimeout: 10000
         maximumPoolSize: 10
   jpa:
     database: mysql
@@ -40,7 +48,6 @@ spring:
     show-sql: true
     properties:
       hibernate.dialect: org.hibernate.dialect.MySQL55Dialect
-
 axon:
   serializer:
     events: jackson

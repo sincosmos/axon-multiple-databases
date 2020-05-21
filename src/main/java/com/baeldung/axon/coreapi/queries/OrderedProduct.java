@@ -1,29 +1,28 @@
 package com.baeldung.axon.coreapi.queries;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
 import java.util.Objects;
 
+@Entity
+@Table(name="order_product")
+@Data
+@NoArgsConstructor
 public class OrderedProduct {
 
-    private final String orderId;
-    private final String product;
+    @Id
+    private String orderId;
+    private String product;
+
+    @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 
     public OrderedProduct(String orderId, String product) {
         this.orderId = orderId;
         this.product = product;
         orderStatus = OrderStatus.PLACED;
-    }
-
-    public String getOrderId() {
-        return orderId;
-    }
-
-    public String getProduct() {
-        return product;
-    }
-
-    public OrderStatus getOrderStatus() {
-        return orderStatus;
     }
 
     public void setOrderConfirmed() {
